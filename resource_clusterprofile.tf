@@ -90,6 +90,12 @@ data "spectrocloud_pack" "k8s" {
   version = "1.23.4"
 }
 
+data "spectrocloud_pack" "k8s2" {
+  name    = "kubernetes"
+  registry_uid = data.spectrocloud_registry.registry.id
+  version = "1.22.7"
+}
+
 data "spectrocloud_pack" "ubuntu" {
   name = "ubuntu-aws"
   registry_uid = data.spectrocloud_registry.registry.id
@@ -117,6 +123,123 @@ pack {
     tag    = data.spectrocloud_pack.k8s.version
     uid    = data.spectrocloud_pack.k8s.id
     values = data.spectrocloud_pack.k8s.values
+  }
+
+pack {
+    name   = "cni-calico"
+    tag    = data.spectrocloud_pack.cni.version
+    uid    = data.spectrocloud_pack.cni.id
+    values = data.spectrocloud_pack.cni.values
+  }
+
+pack {
+    name   = "csi-aws"
+    tag    = data.spectrocloud_pack.csi.version
+    uid    = data.spectrocloud_pack.csi.id
+    values = data.spectrocloud_pack.csi.values
+  }
+
+pack {
+    name   = "open-policy-agent"
+    tag    = data.spectrocloud_pack.open-policy-agent.version
+    uid    = data.spectrocloud_pack.open-policy-agent.id
+    values = data.spectrocloud_pack.open-policy-agent.values
+
+  }
+
+pack {
+    name   = "falco"
+    tag    = data.spectrocloud_pack.falco.version
+    uid    = data.spectrocloud_pack.falco.id
+    values = data.spectrocloud_pack.falco.values
+
+  }
+
+pack {
+    name   = "nginx"
+    tag    = data.spectrocloud_pack.nginx.version
+    uid    = data.spectrocloud_pack.nginx.id
+    values = data.spectrocloud_pack.nginx.values
+  }  
+  
+pack {
+    name   = "k8s-dashboard"
+    tag    = data.spectrocloud_pack.k8sdash.version
+    uid    = data.spectrocloud_pack.k8sdash.id
+    values = <<-EOT
+manifests:
+  k8s-dashboard:
+    #Ingress config
+    annotations: null
+      # kubernetes.io/cluster-name: "cluster123"
+      # kubernetes.io/version: "2.4.0"
+
+      # Additional labels to be applied to Kubernetes Dashboard deployment, pod & service
+    labels: null
+      # app.kubernetes.io/name: "kubernetes-dashboard"
+      # app.kubernetes.io/version: "2.4.0"
+
+      #Namespace to install kubernetes-dashboard
+    namespace: "kubernetes-dashboard"
+    #The ClusterRole to assign for kubernetes-dashboard. By default, a ready-only cluster role is provisioned
+    clusterRole: "k8s-dashboard-readonly"
+    #Self-Signed Certificate duration in hours
+    certDuration: 8760h #365d
+    #Self-Signed Certificate renewal in hours
+    certRenewal: 720h #30d
+    #Flag to enable skip login option on the dashboard login page
+    skipLogin: true
+    #Ingress config
+    ingress:
+      #Ingress host
+      enabled: false
+      #  - secretName: k8s-dashboard-tls
+      #    hosts:
+      #      - kubernetes-dashboard.example.com
+    serviceType: LoadBalancer
+    EOT    
+  } 
+
+pack {
+    name   = "argo-cd"
+    tag    = data.spectrocloud_pack.argo.version
+    uid    = data.spectrocloud_pack.argo.id
+    values = data.spectrocloud_pack.argo.values
+  }  
+
+pack {
+    name   = "sapp-hipster"
+    tag    = data.spectrocloud_pack.sapp-hipster.version
+    uid    = data.spectrocloud_pack.sapp-hipster.id
+    values = data.spectrocloud_pack.sapp-hipster.values
+  }  
+  
+}
+
+######
+#
+# Second Cluster Profile for Demo
+
+resource "spectrocloud_cluster_profile" "profile2" {
+  name        = "dev-team-1"
+  description = "Approved cluster profile for dev team 1"
+  tags        = var.sc_cp_profile_tags
+  cloud       = var.sc_cp_cloud
+  type        = var.sc_cp_type
+  version     = var.sc_cp_version
+
+pack {
+    name   = "ubuntu-aws"
+    tag    = data.spectrocloud_pack.ubuntu.version
+    uid    = data.spectrocloud_pack.ubuntu.id
+    values = data.spectrocloud_pack.ubuntu.values
+  }
+
+pack {
+    name   = "kubernetes"
+    tag    = data.spectrocloud_pack.k8s2.version
+    uid    = data.spectrocloud_pack.k8s2.id
+    values = data.spectrocloud_pack.k8s2.values
   }
 
 pack {
