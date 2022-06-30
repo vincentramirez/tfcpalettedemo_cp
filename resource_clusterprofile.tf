@@ -221,8 +221,8 @@ pack {
 # Second Cluster Profile for Demo
 
 resource "spectrocloud_cluster_profile" "profile2" {
-  name        = "dev-team-1"
-  description = "Approved cluster profile for dev team 1"
+  name        = "dev-team-2"
+  description = "Approved cluster profile for dev team 2"
   tags        = var.sc_cp_profile_tags
   cloud       = var.sc_cp_cloud
   type        = var.sc_cp_type
