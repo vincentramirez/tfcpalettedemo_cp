@@ -35,6 +35,12 @@ data "spectrocloud_registry" "registry" {
   name = "Public Repo"
 }
 
+data "spectrocloud_pack" "falco" {
+  name = "falco"
+  registry_uid = data.spectrocloud_registry.registry.id
+  version  = "1.16.3"
+}
+
 data "spectrocloud_pack" "open-policy-agent" {
   name = "open-policy-agent"
   registry_uid = data.spectrocloud_registry.registry.id
@@ -132,6 +138,14 @@ pack {
     tag    = data.spectrocloud_pack.open-policy-agent.version
     uid    = data.spectrocloud_pack.open-policy-agent.id
     values = data.spectrocloud_pack.open-policy-agent.values
+
+  }
+
+pack {
+    name   = "falco"
+    tag    = data.spectrocloud_pack.falco.version
+    uid    = data.spectrocloud_pack.falco.id
+    values = data.spectrocloud_pack.falco.values
 
   }
 
